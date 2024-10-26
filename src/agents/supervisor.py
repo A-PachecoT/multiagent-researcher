@@ -9,18 +9,21 @@ class SupervisorAgent:
         self.prompt = ChatPromptTemplate.from_messages([
             ("system", "You are a research supervisor coordinating a team of agents. "
                       "Plan and delegate research tasks based on the given topic."),
-            ("user", "{topic}")
+            ("user", "Topic: {topic}\nCurrent research: {research_data}")
         ])
 
-    def create_research_plan(self, topic: str) -> Dict:
+    def create_research_plan(self, state: Dict) -> Dict:
         """Create initial research plan and team assignments"""
-        response = self.llm.invoke(self.prompt.format_messages(topic=topic))
-        # Parse response into research plan
-        return {
-            "topic": topic,
-            "plan": response.content,
-            "stage": "research"
-        }
+        response = self.llm.invoke(
+            self.prompt.format_messages(
+                topic=state.get("topic", ""),
+                research_data=str(state.get("research_data", {}))
+            )
+        )
+        
+        state["plan"] = response.content
+        state["stage"] = "research"
+        return state
 
 def create_workflow() -> StateGraph:
     """Create the main research workflow graph"""
