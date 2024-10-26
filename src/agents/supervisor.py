@@ -2,6 +2,8 @@ from typing import Dict
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 from langgraph.graph import StateGraph, END
+from src.agents.research_team import research_team_step
+from src.agents.content_team import content_team_step
 
 class SupervisorAgent:
     def __init__(self, model: str = "gpt-3.5-turbo"):
@@ -25,6 +27,11 @@ class SupervisorAgent:
         state["stage"] = "research"
         return state
 
+def supervisor_step(state: Dict) -> Dict:
+    """Supervisor step function for the workflow"""
+    supervisor = SupervisorAgent()
+    return supervisor.create_research_plan(state)
+
 def create_workflow() -> StateGraph:
     """Create the main research workflow graph"""
     workflow = StateGraph()
@@ -34,9 +41,9 @@ def create_workflow() -> StateGraph:
         return state["stage"] != "complete"
     
     # Add nodes and edges
-    workflow.add_node("supervisor", SupervisorAgent().create_research_plan)
-    workflow.add_node("research_team", research_team_step)  # To be implemented
-    workflow.add_node("content_team", content_team_step)    # To be implemented
+    workflow.add_node("supervisor", supervisor_step)
+    workflow.add_node("research_team", research_team_step)
+    workflow.add_node("content_team", content_team_step)
     
     # Define workflow
     workflow.add_edge("supervisor", "research_team")
