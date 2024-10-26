@@ -6,7 +6,7 @@ from src.agents.research_team import research_team_step
 from src.agents.content_team import content_team_step
 
 class SupervisorAgent:
-    def __init__(self, model: str = "gpt-3.5-turbo"):
+    def __init__(self, model: str = "gpt-4o"):
         self.llm = ChatOpenAI(model=model)
         self.prompt = ChatPromptTemplate.from_messages([
             ("system", "You are a research supervisor coordinating a team of agents. "
