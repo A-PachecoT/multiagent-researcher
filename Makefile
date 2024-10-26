@@ -3,7 +3,11 @@
 # Poetry installation and environment setup
 install:
 	@echo "Installing dependencies..."
-	poetry install
+	@if [ ! -f pyproject.toml ]; then \
+		echo "Error: pyproject.toml not found. Make sure you're in the correct directory."; \
+		exit 1; \
+	fi
+	poetry install --no-root
 
 # Run tests with coverage
 test:
