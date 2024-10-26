@@ -1,4 +1,17 @@
-.PHONY: install test format lint clean run example
+.PHONY: help install test format lint clean run example setup
+
+# Default target
+help:
+	@echo "Available commands:"
+	@echo "  make help       Show this help message"
+	@echo "  make install    Install project dependencies"
+	@echo "  make test       Run tests with coverage"
+	@echo "  make format     Format code using Black and isort"
+	@echo "  make lint       Run linters (flake8, black, and isort)"
+	@echo "  make clean      Remove cache files"
+	@echo "  make run        Run the research script"
+	@echo "  make example    Run the research example"
+	@echo "  make setup      Setup initial project structure"
 
 # Poetry installation and environment setup
 install:
