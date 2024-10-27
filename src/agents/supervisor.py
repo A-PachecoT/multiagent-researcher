@@ -2,7 +2,7 @@ from typing import Dict
 
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
-from langgraph.graph import END, StateGraph
+from langgraph.graph import END, START, StateGraph
 
 from agents.content_team import content_team_step
 from agents.research_team import research_team_step
@@ -45,11 +45,12 @@ def supervisor_step(state: Dict) -> Dict:
 
 def create_workflow() -> StateGraph:
     """Create the main research workflow graph"""
-    workflow = StateGraph(ResearchState)  # Initialize with schema
+    # Initialize with schema
+    workflow = StateGraph(ResearchState)
 
     # Define state transitions
     def should_continue(state):
-        return state["stage"] != "complete"
+        return state["next"] != "FINISH"
 
     # Add nodes and edges
     workflow.add_node("supervisor", supervisor_step)
@@ -57,10 +58,12 @@ def create_workflow() -> StateGraph:
     workflow.add_node("content_team", content_team_step)
 
     # Define workflow
+    workflow.add_edge(START, "supervisor")
     workflow.add_edge("supervisor", "research_team")
     workflow.add_edge("research_team", "content_team")
     workflow.add_conditional_edges(
         "content_team", should_continue, {True: "supervisor", False: END}
     )
 
-    return workflow
+    # Compile the graph before returning
+    return workflow.compile()

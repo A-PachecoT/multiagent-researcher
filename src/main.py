@@ -19,25 +19,21 @@ def initialize_research(topic: str) -> ResearchState:
     )
 
 
-def run_research(topic: str) -> Optional[Dict]:
-    """Main entry point for running research workflow"""
+def run_research(topic: str) -> dict:
+    """Run research workflow for a given topic"""
     try:
-        logger.info(f"Starting research on topic: {topic}")
-        workflow = create_workflow()
+        # Initialize state
         initial_state = initialize_research(topic)
 
-        # Run the workflow
-        final_state = workflow.run(initial_state)
+        # Create and compile workflow
+        workflow = create_workflow()
 
-        logger.info("Research completed successfully")
-        return {
-            "content": final_state["content"],
-            "metadata": final_state.get("metadata", {}),
-            "research_data": final_state["research_data"],
-        }
+        # Use invoke() instead of run()
+        result = workflow.invoke(initial_state)
 
+        return result
     except Exception as e:
-        logger.error(f"Error during research: {str(e)}")
+        logging.error(f"Error during research: {e}")
         return None
 
 
