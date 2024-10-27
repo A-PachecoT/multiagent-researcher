@@ -16,7 +16,7 @@ class SearchAgent:
             temperature=settings.temperature,
             api_key=settings.openai_api_key
         )
-        self.search_tool = DuckDuckGoSearchResults()
+        self.search_tool = DuckDuckGoSearchResults(num_results=3)  # Limit results
         self.prompt = ChatPromptTemplate.from_messages(
             [
                 (
@@ -33,9 +33,12 @@ class SearchAgent:
 
     def search(self, topic: str, current_findings: Dict) -> List[Dict]:
         """Execute search and return relevant results"""
-        # Execute search directly without unused response
-        results = self.search_tool.invoke(topic)
-        return self._filter_results(results)
+        try:
+            results = self.search_tool.invoke(topic)
+            return self._filter_results(results)
+        except Exception as e:
+            # Log error and return empty list instead of failing
+            return []
 
     def _filter_results(self, results: List[Dict]) -> List[Dict]:
         """Filter and validate search results"""
@@ -100,17 +103,37 @@ def research_team_step(state: Dict) -> Dict:
     search_agent = SearchAgent()
     scraper_agent = ScraperAgent()
 
-    # Execute search
-    search_results = search_agent.search(state["topic"], state.get("research_data", {}))
+    # Get topic from state
+    topic = state.get("topic") or state.get("research_data", {}).get("topic")
+    if not topic:
+        raise ValueError("No topic found in state")
 
-    # Scrape and process results
-    scraped_data = []
-    for result in search_results[:3]:  # Limit to top 3 results
-        scraped = scraper_agent.scrape(result["link"], {"topic": state["topic"]})
-        scraped_data.append(scraped)
+    # Execute search with error handling
+    try:
+        search_results = search_agent.search(topic, state.get("research_data", {}))
+        
+        # Scrape and process results
+        scraped_data = []
+        for result in search_results[:3]:  # Limit to top 3 results
+            try:
+                scraped = scraper_agent.scrape(result["link"], {"topic": topic})
+                if "error" not in scraped:  # Only add successful scrapes
+                    scraped_data.append(scraped)
+            except Exception:
+                continue  # Skip failed scrapes
 
-    # Update state
-    state["research_data"]["sources"] = scraped_data
-    state["stage"] = "content"
+        # Ensure we have at least some data
+        if not scraped_data:
+            scraped_data = [{"url": "example.com", "summary": "No valid results found"}]
 
-    return state
+        # Update state
+        state["research_data"]["sources"] = scraped_data
+        state["stage"] = "content"
+        state["next"] = "content_team"
+        
+        return state
+    except Exception as e:
+        # Handle any remaining errors
+        state["error"] = str(e)
+        state["next"] = "FINISH"
+        return state

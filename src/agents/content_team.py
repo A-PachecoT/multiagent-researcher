@@ -83,19 +83,39 @@ def content_team_step(state: Dict) -> Dict:
     synthesizer = SynthesizerAgent()
     writer = WriterAgent()
 
+    # Check for errors in previous steps
+    if "error" in state:
+        state["next"] = "FINISH"
+        return state
+
     # Get sources from research data
     sources = state.get("research_data", {}).get("sources", [])
+    if not sources:
+        state["error"] = "No sources available for synthesis"
+        state["next"] = "FINISH"
+        return state
 
-    # Synthesize research
-    synthesis = synthesizer.synthesize(state["topic"], sources)
-    state["research_data"]["synthesis"] = synthesis
+    try:
+        # Get topic from state
+        topic = state.get("topic") or state.get("research_data", {}).get("topic")
+        if not topic:
+            raise ValueError("No topic found in state")
 
-    # Create final content
-    final_content = writer.write(state["topic"], synthesis)
+        # Synthesize research
+        synthesis = synthesizer.synthesize(topic, sources)
+        state["research_data"]["synthesis"] = synthesis
 
-    # Update state
-    state["content"] = final_content["content"]
-    state["metadata"] = final_content["metadata"]
-    state["stage"] = "complete"
+        # Create final content
+        final_content = writer.write(topic, synthesis)
 
-    return state
+        # Update state
+        state["content"] = final_content["content"]
+        state["metadata"] = final_content["metadata"]
+        state["stage"] = "complete"
+        state["next"] = "FINISH"
+
+        return state
+    except Exception as e:
+        state["error"] = str(e)
+        state["next"] = "FINISH"
+        return state

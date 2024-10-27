@@ -45,10 +45,15 @@ class SupervisorAgent:
 def supervisor_step(state: Dict) -> Dict:
     """Supervisor step function for the workflow"""
     supervisor = SupervisorAgent()
-    updated_state = supervisor.create_research_plan(state)
     
-    # Set next agent in workflow
+    # Ensure topic is available in state
+    topic = state.get("research_data", {}).get("topic", "")
+    if not topic:
+        raise ValueError("No topic provided in research data")
+        
+    updated_state = supervisor.create_research_plan(state)
     updated_state["next"] = "research_team"
+    updated_state["topic"] = topic  # Ensure topic is in root state
     
     return updated_state
 
