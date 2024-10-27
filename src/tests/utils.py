@@ -1,6 +1,6 @@
 """Test utilities and mock classes"""
 from unittest.mock import MagicMock
-from .fixtures import MOCK_OPENAI_RESPONSES, MOCK_SEARCH_RESULTS
+from tests.fixtures import MOCK_OPENAI_RESPONSES, MOCK_SEARCH_RESULTS
 
 
 class MockResponse:

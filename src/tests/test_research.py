@@ -1,7 +1,8 @@
 import pytest
 from unittest.mock import patch, MagicMock
-from .fixtures import MOCK_SEARCH_RESULTS, MOCK_HTML_CONTENT, MOCK_OPENAI_RESPONSES
-from .utils import MockOpenAI, MockDuckDuckGo
+
+from tests.fixtures import MOCK_SEARCH_RESULTS, MOCK_HTML_CONTENT, MOCK_OPENAI_RESPONSES
+from tests.utils import MockOpenAI, MockDuckDuckGo
 
 from agents.content_team import SynthesizerAgent, WriterAgent
 from agents.research_team import ScraperAgent, SearchAgent
