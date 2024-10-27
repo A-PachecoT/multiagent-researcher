@@ -1,4 +1,5 @@
 from typing import Dict
+from settings import settings
 
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
@@ -10,8 +11,12 @@ from state import ResearchState
 
 
 class SupervisorAgent:
-    def __init__(self, model: str = "gpt-4o"):
-        self.llm = ChatOpenAI(model=model)
+    def __init__(self, model: str = settings.gpt_model):
+        self.llm = ChatOpenAI(
+            model=model,
+            temperature=settings.temperature,
+            api_key=settings.openai_api_key
+        )
         self.prompt = ChatPromptTemplate.from_messages(
             [
                 (

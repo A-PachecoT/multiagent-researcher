@@ -1,12 +1,17 @@
 from typing import Dict, List
+from settings import settings
 
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 
 
 class SynthesizerAgent:
-    def __init__(self, model: str = "gpt-4o"):
-        self.llm = ChatOpenAI(model=model)
+    def __init__(self, model: str = settings.gpt_model):
+        self.llm = ChatOpenAI(
+            model=model,
+            temperature=settings.temperature,
+            api_key=settings.openai_api_key
+        )
         self.prompt = ChatPromptTemplate.from_messages(
             [
                 (
@@ -39,8 +44,12 @@ class SynthesizerAgent:
 
 
 class WriterAgent:
-    def __init__(self, model: str = "gpt-4"):
-        self.llm = ChatOpenAI(model=model)
+    def __init__(self, model: str = settings.gpt_model):
+        self.llm = ChatOpenAI(
+            model=model,
+            temperature=settings.temperature,
+            api_key=settings.openai_api_key
+        )
         self.prompt = ChatPromptTemplate.from_messages(
             [
                 (

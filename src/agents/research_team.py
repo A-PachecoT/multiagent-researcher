@@ -1,5 +1,6 @@
 from typing import Dict, List
 from urllib.parse import urlparse
+from settings import settings
 
 import requests
 from bs4 import BeautifulSoup
@@ -9,8 +10,12 @@ from langchain_openai import ChatOpenAI
 
 
 class SearchAgent:
-    def __init__(self, model: str = "gpt-3.5-turbo"):
-        self.llm = ChatOpenAI(model=model)
+    def __init__(self, model: str = settings.gpt_model):
+        self.llm = ChatOpenAI(
+            model=model,
+            temperature=settings.temperature,
+            api_key=settings.openai_api_key
+        )
         self.search_tool = DuckDuckGoSearchResults()
         self.prompt = ChatPromptTemplate.from_messages(
             [
@@ -47,8 +52,12 @@ class SearchAgent:
 
 
 class ScraperAgent:
-    def __init__(self, model: str = "gpt-3.5-turbo"):
-        self.llm = ChatOpenAI(model=model)
+    def __init__(self, model: str = settings.gpt_model):
+        self.llm = ChatOpenAI(
+            model=model,
+            temperature=settings.temperature,
+            api_key=settings.openai_api_key
+        )
         self.prompt = ChatPromptTemplate.from_messages(
             [
                 (
