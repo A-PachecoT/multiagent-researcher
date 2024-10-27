@@ -7,6 +7,7 @@ BLACK = poetry run black
 ISORT = poetry run isort
 FLAKE8 = poetry run flake8
 SRC_DIR = src
+PYTHONPATH = PYTHONPATH=$(SRC_DIR)
 
 # Default target
 help:
@@ -33,7 +34,7 @@ install:
 # Run tests with coverage
 test:
 	@echo "Running tests..."
-	$(PYTEST) tests/ --cov=$(SRC_DIR) --cov-report=term-missing
+	$(PYTHONPATH) $(PYTEST) $(SRC_DIR)/tests --cov=$(SRC_DIR) --cov-report=term-missing
 
 # Format code with black and isort
 format:
@@ -58,17 +59,18 @@ clean:
 # Run the example
 example:
 	@echo "Running research example..."
-	cd $(SRC_DIR) && $(PYTHON) examples/research_example.py
+	$(PYTHONPATH) $(PYTHON) $(SRC_DIR)/examples/research_example.py
 
 # Run specific research topic
 run:
 	@echo "Running research..."
-	cd $(SRC_DIR) && $(PYTHON) main.py
+	$(PYTHONPATH) $(PYTHON) $(SRC_DIR)/main.py
 
 # Setup initial project structure
 setup: install
 	@echo "Creating necessary directories..."
 	mkdir -p $(SRC_DIR)/tests
+	mkdir -p $(SRC_DIR)/examples
 	touch .env
 	@echo "OPENAI_API_KEY=your-api-key-here" > .env
 	@echo "Project setup complete. Don't forget to add your OpenAI API key to .env"
