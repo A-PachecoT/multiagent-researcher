@@ -1,5 +1,13 @@
 .PHONY: help install test format lint clean run example setup
 
+# Variables
+PYTHON = poetry run python
+PYTEST = poetry run pytest
+BLACK = poetry run black
+ISORT = poetry run isort
+FLAKE8 = poetry run flake8
+SRC_DIR = src
+
 # Default target
 help:
 	@echo "Available commands:"
@@ -25,20 +33,20 @@ install:
 # Run tests with coverage
 test:
 	@echo "Running tests..."
-	poetry run pytest tests/ --cov=src --cov-report=term-missing
+	$(PYTEST) tests/ --cov=$(SRC_DIR) --cov-report=term-missing
 
 # Format code with black and isort
 format:
 	@echo "Formatting code..."
-	poetry run black src/
-	poetry run isort src/
+	$(BLACK) $(SRC_DIR)
+	$(ISORT) $(SRC_DIR)
 
 # Run linting checks
 lint:
 	@echo "Running linting checks..."
-	poetry run flake8 src/
-	poetry run black --check src/
-	poetry run isort --check-only src/
+	$(FLAKE8) $(SRC_DIR)
+	$(BLACK) --check $(SRC_DIR)
+	$(ISORT) --check-only $(SRC_DIR)
 
 # Clean up cache files
 clean:
@@ -50,17 +58,17 @@ clean:
 # Run the example
 example:
 	@echo "Running research example..."
-	poetry run python src/examples/research_example.py
+	cd $(SRC_DIR) && $(PYTHON) examples/research_example.py
 
 # Run specific research topic
 run:
 	@echo "Running research..."
-	poetry run python src/main.py
+	cd $(SRC_DIR) && $(PYTHON) main.py
 
 # Setup initial project structure
 setup: install
 	@echo "Creating necessary directories..."
-	mkdir -p src/tests
+	mkdir -p $(SRC_DIR)/tests
 	touch .env
 	@echo "OPENAI_API_KEY=your-api-key-here" > .env
 	@echo "Project setup complete. Don't forget to add your OpenAI API key to .env"
