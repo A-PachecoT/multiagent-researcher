@@ -82,7 +82,7 @@ def test_synthesizer_agent():
 
     assert "synthesis" in result
     assert result["source_count"] == 2
-    assert result["synthesis"] == MOCK_OPENAI_RESPONSES["content"]
+    assert result["synthesis"] == MOCK_OPENAI_RESPONSES["synthesis"]  # Updated assertion
 
 
 @pytest.mark.usefixtures("mock_openai")
@@ -90,7 +90,7 @@ def test_writer_agent():
     """Test writer agent functionality with mocked OpenAI"""
     agent = WriterAgent()
     synthesis = {
-        "synthesis": "Python is a versatile programming language used in data science",
+        "synthesis": MOCK_OPENAI_RESPONSES["synthesis"],  # Use consistent test data
         "source_count": 2,
     }
 

@@ -4,7 +4,7 @@ from typing import Annotated, List, TypedDict, Optional
 from langchain_core.messages import BaseMessage
 
 
-class ResearchState(TypedDict):
+class ResearchState(TypedDict, total=False):  # Make it non-total
     """Research state schema"""
 
     # Messages between agents
@@ -18,6 +18,8 @@ class ResearchState(TypedDict):
     # Final output
     content: str
     # Research stage tracking
-    stage: Optional[str]
+    stage: str
     # Research plan
-    plan: Optional[str]
+    plan: str
+    # Topic (added to root level)
+    topic: str
