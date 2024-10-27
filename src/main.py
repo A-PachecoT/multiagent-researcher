@@ -3,8 +3,10 @@ from typing import Dict, Optional
 
 from agents.supervisor import create_workflow
 from state import ResearchState
+from settings import settings
 
-logging.basicConfig(level=logging.INFO)
+# Use settings for logging configuration
+logging.basicConfig(level=settings.log_level)
 logger = logging.getLogger(__name__)
 
 
@@ -19,7 +21,7 @@ def initialize_research(topic: str) -> ResearchState:
     )
 
 
-def run_research(topic: str) -> dict:
+def run_research(topic: str) -> Optional[Dict]:
     """Run research workflow for a given topic"""
     try:
         # Initialize state
@@ -33,7 +35,7 @@ def run_research(topic: str) -> dict:
 
         return result
     except Exception as e:
-        logging.error(f"Error during research: {e}")
+        logger.error(f"Error during research: {e}")
         return None
 
 
@@ -43,7 +45,7 @@ if __name__ == "__main__":
     result = run_research(topic)
 
     if result:
-        print(f"Research completed. Content length: {len(result['content'])}")
-        print(f"Sources used: {result['metadata'].get('sources_used', 0)}")
+        logger.info(f"Research completed. Content length: {len(result['content'])}")
+        logger.info(f"Sources used: {result['metadata'].get('sources_used', 0)}")
     else:
-        print("Research failed. Check logs for details.")
+        logger.error("Research failed. Check logs for details.")

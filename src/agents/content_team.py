@@ -5,7 +5,7 @@ from langchain_openai import ChatOpenAI
 
 
 class SynthesizerAgent:
-    def __init__(self, model: str = "gpt-3.5-turbo-16k"):
+    def __init__(self, model: str = "gpt-4o"):
         self.llm = ChatOpenAI(model=model)
         self.prompt = ChatPromptTemplate.from_messages(
             [
