@@ -5,6 +5,8 @@ from langchain_core.messages import BaseMessage
 
 
 class ResearchState(TypedDict):
+    """Research state schema"""
+
     # Messages between agents
     messages: Annotated[List[BaseMessage], operator.add]
     # Track team members

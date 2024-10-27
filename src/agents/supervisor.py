@@ -6,6 +6,7 @@ from langgraph.graph import END, StateGraph
 
 from agents.content_team import content_team_step
 from agents.research_team import research_team_step
+from state import ResearchState
 
 
 class SupervisorAgent:
@@ -44,7 +45,7 @@ def supervisor_step(state: Dict) -> Dict:
 
 def create_workflow() -> StateGraph:
     """Create the main research workflow graph"""
-    workflow = StateGraph()
+    workflow = StateGraph(ResearchState)  # Initialize with schema
 
     # Define state transitions
     def should_continue(state):
