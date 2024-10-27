@@ -13,8 +13,7 @@ A powerful multi-agent system for automated research using LangGraph and LangCha
 - **Configurable Workflow**: Easy to modify and extend
 
 ## 🛠️ Architecture
-```
-mermaid
+```mermaid
 graph TD
 A[Supervisor Agent] --> B[Research Team]
 A --> C[Content Team]
@@ -40,23 +39,24 @@ end
 ### Installation
 
 1. Clone the repository:
-```bash
-git clone https://github.com/A-PachecoT/multiagent-researcher.git
-cd multiagent-researcher
-```
+    ```bash
+    git clone https://github.com/A-PachecoT/multiagent-researcher.git
+    cd multiagent-researcher
+    ```
 
 2. Set up environment:
-```bash
-Copy environment template
-cp .env.example .env
-Edit .env with your API keys
-nano .env
-```
+    ```bash
+    cp .env.example .env
+    ```
+    Edit .env with your API keys:
+    ```bash
+    nano .env
+    ```
 
 3. Install dependencies:
-```bash
-make setup
-```
+    ```bash
+    make setup
+    ```
 
 ### Usage
 
