@@ -14,22 +14,25 @@ def run_example():
     ]
 
     for topic in topics:
-        print(f"\n{'='*50}")
+        separator = "=" * 50
+        print(f"\n{separator}")
         print(f"Researching: {topic}")
-        print(f"{'='*50}\n")
+        print(f"{separator}\n")
 
         result = run_research(topic)
 
         if result:
-            print(f"\nResearch Summary:")
+            print("\nResearch Summary:")
             print(f"- Content length: {len(result['content'])} characters")
-            print(f"- Sources used: {result['metadata'].get('sources_used', 0)}")
+            print(
+                f"- Sources used: {result['metadata'].get('sources_used', 0)}"
+            )
             print("\nFirst 500 characters of content:")
             print(f"{result['content'][:500]}...")
         else:
             print("Research failed!")
 
-        print(f"\n{'='*50}\n")
+        print(f"\n{separator}\n")
 
 
 if __name__ == "__main__":
