@@ -1,6 +1,8 @@
-from typing import TypedDict, Annotated, List
-from langchain_core.messages import BaseMessage
 import operator
+from typing import Annotated, List, TypedDict
+
+from langchain_core.messages import BaseMessage
+
 
 class ResearchState(TypedDict):
     # Messages between agents
