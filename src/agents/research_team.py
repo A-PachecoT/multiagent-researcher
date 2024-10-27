@@ -21,20 +21,14 @@ class SearchAgent:
                 ),
                 (
                     "user",
-                    "Research topic: {topic}\nCurrent findings: {current_findings}",
+                    "Research topic: {topic}\n" "Current findings: {current_findings}",
                 ),
             ]
         )
 
     def search(self, topic: str, current_findings: Dict) -> List[Dict]:
         """Execute search and return relevant results"""
-        response = self.llm.invoke(
-            self.prompt.format_messages(
-                topic=topic, current_findings=str(current_findings)
-            )
-        )
-
-        # Execute search with multiple queries
+        # Execute search directly without unused response
         results = self.search_tool.invoke(topic)
         return self._filter_results(results)
 
@@ -48,7 +42,7 @@ class SearchAgent:
         try:
             result = urlparse(url)
             return all([result.scheme, result.netloc])
-        except:
+        except ValueError:
             return False
 
 

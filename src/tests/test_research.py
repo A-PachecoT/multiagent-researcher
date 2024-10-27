@@ -2,7 +2,6 @@ import pytest
 
 from agents.content_team import SynthesizerAgent, WriterAgent
 from agents.research_team import ScraperAgent, SearchAgent
-from agents.supervisor import SupervisorAgent
 from main import initialize_research, run_research
 
 

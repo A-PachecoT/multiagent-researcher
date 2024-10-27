@@ -35,3 +35,7 @@ multi_line_output = 3
 
 [tool.pytest.ini_options]
 pythonpath = "src"
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = "E203"
