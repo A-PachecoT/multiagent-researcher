@@ -1,8 +1,8 @@
 import logging
 from typing import Dict, Optional
 
-from src.agents.supervisor import create_workflow
-from src.state import ResearchState
+from agents.supervisor import create_workflow
+from state import ResearchState
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

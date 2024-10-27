@@ -4,8 +4,8 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 from langgraph.graph import END, StateGraph
 
-from src.agents.content_team import content_team_step
-from src.agents.research_team import research_team_step
+from agents.content_team import content_team_step
+from agents.research_team import research_team_step
 
 
 class SupervisorAgent:

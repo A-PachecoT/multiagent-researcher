@@ -1,6 +1,6 @@
 import logging
 
-from src.main import run_research
+from main import run_research
 
 logging.basicConfig(level=logging.INFO)
 

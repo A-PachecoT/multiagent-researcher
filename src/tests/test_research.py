@@ -1,9 +1,9 @@
 import pytest
 
-from src.agents.content_team import SynthesizerAgent, WriterAgent
-from src.agents.research_team import ScraperAgent, SearchAgent
-from src.agents.supervisor import SupervisorAgent
-from src.main import initialize_research, run_research
+from agents.content_team import SynthesizerAgent, WriterAgent
+from agents.research_team import ScraperAgent, SearchAgent
+from agents.supervisor import SupervisorAgent
+from main import initialize_research, run_research
 
 
 def test_initialize_research():
