@@ -18,6 +18,8 @@ def initialize_research(topic: str) -> ResearchState:
         next="supervisor",
         research_data={"topic": topic},
         content="",
+        stage="planning",  # Add initial stage
+        plan=None,  # Add initial plan as None
     )
 
 
@@ -41,7 +43,7 @@ def run_research(topic: str) -> Optional[Dict]:
 
 if __name__ == "__main__":
     # Example usage
-    topic = "The impact of artificial intelligence on modern healthcare"
+    topic = "AI researcher agentic architectures in 2024"
     result = run_research(topic)
 
     if result:

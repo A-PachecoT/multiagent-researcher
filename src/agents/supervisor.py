@@ -45,7 +45,12 @@ class SupervisorAgent:
 def supervisor_step(state: Dict) -> Dict:
     """Supervisor step function for the workflow"""
     supervisor = SupervisorAgent()
-    return supervisor.create_research_plan(state)
+    updated_state = supervisor.create_research_plan(state)
+    
+    # Set next agent in workflow
+    updated_state["next"] = "research_team"
+    
+    return updated_state
 
 
 def create_workflow() -> StateGraph:
