@@ -16,6 +16,7 @@ MOCK_HTML_CONTENT = """
 
 MOCK_OPENAI_RESPONSES = {
     "supervisor": "Research plan for Python programming...",
-    "synthesis": "Comprehensive analysis of Python programming...",
-    "content": "Final article about Python programming..."
+    "synthesis": "Comprehensive synthesis of Python programming...",
+    "content": "Comprehensive synthesis of Python programming...",
+    "summary": "Summary of Python content..."
 }

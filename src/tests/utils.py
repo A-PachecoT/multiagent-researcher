@@ -5,10 +5,10 @@ from tests.fixtures import MOCK_OPENAI_RESPONSES, MOCK_SEARCH_RESULTS
 
 class MockResponse:
     """Mock response object for different types of responses"""
-    def __init__(self, content_type: str):
-        self.content = MOCK_OPENAI_RESPONSES[content_type]
+    def __init__(self, content_type: str = "content"):
+        self.content = MOCK_OPENAI_RESPONSES.get(content_type, MOCK_OPENAI_RESPONSES["content"])
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, messages, *args, **kwargs):
         return MagicMock(content=self.content)
 
 
@@ -22,4 +22,4 @@ class MockOpenAI:
 class MockDuckDuckGo:
     """Mock DuckDuckGo search with predefined results"""
     def invoke(self, query):
-        return MOCK_SEARCH_RESULTS
+        return MOCK_SEARCH_RESULTS.copy()  # Return a copy to prevent modifications
