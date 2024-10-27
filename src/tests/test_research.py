@@ -1,8 +1,37 @@
 import pytest
+from unittest.mock import patch, MagicMock
+from .fixtures import MOCK_SEARCH_RESULTS, MOCK_HTML_CONTENT, MOCK_OPENAI_RESPONSES
+from .utils import MockOpenAI, MockDuckDuckGo
 
 from agents.content_team import SynthesizerAgent, WriterAgent
 from agents.research_team import ScraperAgent, SearchAgent
 from main import initialize_research, run_research
+
+
+@pytest.fixture
+def mock_openai():
+    """Mock OpenAI API responses"""
+    with patch('langchain_openai.ChatOpenAI') as mock:
+        mock.return_value.invoke.return_value = MagicMock(
+            content=MOCK_OPENAI_RESPONSES["content"]
+        )
+        yield mock
+
+
+@pytest.fixture
+def mock_duckduckgo():
+    """Mock DuckDuckGo search results"""
+    with patch('langchain_community.tools.DuckDuckGoSearchResults') as mock:
+        mock.return_value.invoke.return_value = MOCK_SEARCH_RESULTS
+        yield mock
+
+
+@pytest.fixture
+def mock_requests():
+    """Mock HTTP requests"""
+    with patch('requests.get') as mock:
+        mock.return_value.text = MOCK_HTML_CONTENT
+        yield mock
 
 
 def test_initialize_research():
@@ -11,32 +40,37 @@ def test_initialize_research():
     state = initialize_research(topic)
 
     assert state["next"] == "supervisor"
-    assert "topic" in state["research_data"]
     assert state["research_data"]["topic"] == topic
     assert len(state["team_members"]) == 5
+    assert state["stage"] == "planning"
+    assert state["plan"] is None
 
 
+@pytest.mark.usefixtures("mock_duckduckgo")
 def test_search_agent():
-    """Test search agent functionality"""
+    """Test search agent functionality with mocked DuckDuckGo"""
     agent = SearchAgent()
     results = agent.search("Python programming basics", {"existing": "none"})
 
     assert isinstance(results, list)
-    assert len(results) > 0
-    assert "link" in results[0]
+    assert len(results) == len(MOCK_SEARCH_RESULTS)
+    assert results[0]["link"] == MOCK_SEARCH_RESULTS[0]["link"]
 
 
+@pytest.mark.usefixtures("mock_openai", "mock_requests")
 def test_scraper_agent():
-    """Test scraper agent functionality"""
+    """Test scraper agent functionality with mocked requests"""
     agent = ScraperAgent()
     result = agent.scrape("https://python.org", {"topic": "Python programming"})
 
     assert "url" in result
-    assert "summary" in result or "error" in result
+    assert "summary" in result
+    assert result["url"] == "https://python.org"
 
 
+@pytest.mark.usefixtures("mock_openai")
 def test_synthesizer_agent():
-    """Test synthesizer agent functionality"""
+    """Test synthesizer agent functionality with mocked OpenAI"""
     agent = SynthesizerAgent()
     sources = [
         {"summary": "Python is a programming language"},
@@ -46,12 +80,13 @@ def test_synthesizer_agent():
     result = agent.synthesize("Python programming", sources)
 
     assert "synthesis" in result
-    assert "source_count" in result
     assert result["source_count"] == 2
+    assert result["synthesis"] == MOCK_OPENAI_RESPONSES["content"]
 
 
+@pytest.mark.usefixtures("mock_openai")
 def test_writer_agent():
-    """Test writer agent functionality"""
+    """Test writer agent functionality with mocked OpenAI"""
     agent = WriterAgent()
     synthesis = {
         "synthesis": "Python is a versatile programming language used in data science",
@@ -62,11 +97,13 @@ def test_writer_agent():
 
     assert "content" in result
     assert "metadata" in result
-    assert "sources_used" in result["metadata"]
+    assert result["metadata"]["sources_used"] == synthesis["source_count"]
+    assert result["content"] == MOCK_OPENAI_RESPONSES["content"]
 
 
+@pytest.mark.usefixtures("mock_openai", "mock_duckduckgo", "mock_requests")
 def test_full_research_workflow():
-    """Test the complete research workflow"""
+    """Test the complete research workflow with all mocks"""
     topic = "Python programming basics"
     result = run_research(topic)
 
@@ -75,6 +112,7 @@ def test_full_research_workflow():
     assert "metadata" in result
     assert "research_data" in result
     assert len(result["content"]) > 0
+    assert result["stage"] == "complete"
 
 
 if __name__ == "__main__":
