@@ -24,9 +24,7 @@ def run_example():
         if result:
             print("\nResearch Summary:")
             print(f"- Content length: {len(result['content'])} characters")
-            print(
-                f"- Sources used: {result['metadata'].get('sources_used', 0)}"
-            )
+            print(f"- Sources used: {result['metadata'].get('sources_used', 0)}")
             print("\nFirst 500 characters of content:")
             print(f"{result['content'][:500]}...")
         else:
